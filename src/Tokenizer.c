@@ -30,7 +30,7 @@ char * getIdentifier(char * currLine, int * position){
     char * ident = malloc(MY_CHAR_MAX * sizeof(char)); 
     ident[MY_CHAR_MAX - 1] = '\0'; 
     int index = 0; 
-    while(isLetter(currLine[*position])){
+    while(isLetter(currLine[*position]) || isDigit(currLine[*position])){
         ident[index] = currLine[*position]; 
         index++; 
         (*position)++; 
@@ -65,6 +65,12 @@ void lineParse(struct lexics * aLex, char * currLine, int *numLex){
         }else if(currLine[i] == '('){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i])); 
         }else if(currLine[i] == ')'){
+            addToLexics(aLex, numLex, makeSingleLex(currLine[i])); 
+        }else if(currLine[i] == '+'){
+            addToLexics(aLex, numLex, makeSingleLex(currLine[i])); 
+        }else if(currLine[i] == '*'){
+            addToLexics(aLex, numLex, makeSingleLex(currLine[i])); 
+        }else if(currLine[i] == '%'){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i])); 
         }
     }
