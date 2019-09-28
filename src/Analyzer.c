@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "Analyzer.h"
 
 int main(){
@@ -7,11 +8,11 @@ int main(){
 	char filename[MY_CHAR_MAX];  
 	//Prompt the user to input a filename and continue to prompt the user until they enter a correct one
 	while(infile == NULL) {  
-		printf("Enter filename: ");  
-		scanf("%s",filename);
+		//printf("Enter filename: ");  
+		//scanf("%s",filename);
 		//When given a filename, use fopen to create a new file pointer. 
 			//If fopen can not find the file, it returns null
-		infile = fopen(filename, "r+");
+		infile = fopen("tt.txt", "r+");
 		if(infile == NULL){ 
 			printf("ERROR: file %s cannot be opened\n", filename);
 	  	}

@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-c -std=c99
+CFLAGS=-c -std=c99 -g
 SRC= src
 OBJ = obj
 
@@ -20,5 +20,5 @@ $(OBJ)/Tokenizer.o: $(SRC)/Tokenizer.c
 $(OBJ)/Parser.o: $(SRC)/Parser.c 
 	$(CC) -I$(SRC) $(CFLAGS) $< -o $@
 
-Clean:
-	rm -rf *o parse
+clean:
+	rm -rf $(OBJ)/*o parse
