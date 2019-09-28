@@ -25,7 +25,7 @@
 #define MY_CHAR_MAX 256
 
 struct lexics{
-	int token;
+	int token; 
 	char lexeme[LEXEME_MAX];
 };
 
