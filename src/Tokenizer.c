@@ -87,7 +87,7 @@ _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
                 addToLexics(aLex, numLex, "==", BINOP); 
                 i++; 
             }else{
-                addToLexics(aLex, numLex, "=", BINOP); 
+                addToLexics(aLex, numLex, "=", EQUAL); 
             }
         }else if(isWhite(currLine[i])){
             continue; 
