@@ -1,8 +1,11 @@
 #include <stdlib.h>
-
 #include "Parser.h"
 
-void advanceToken(struct lexics * allLex, struct lexics *current, int * index){// saves state and doesn't actually keep becoming zero. I know it's not thread safe but I don't use threads in this program so wahhhhh
+//***************************************************************
+// merge the advance token and assurToken methods !!!!!!!!!!!!!!!
+//***************************************************************
+
+void advanceToken(struct lexics * allLex, struct lexics *current, int * index){
     *current = allLex[*index]; 
    (*index)++; 
     printf("index is %d:", *index); 
@@ -118,7 +121,7 @@ _Bool body(struct lexics * allLex, struct lexics *current, int *index){
 
     // then check if index is the last lexeme and is a right bracket  
     if(!assureToken(*current, RIGHT_BRACKET)) return FALSE; 
-    (*index)++; 
+    advanceToken(allLex, current, index); 
 
     return TRUE; 
 }
