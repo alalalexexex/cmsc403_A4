@@ -1,4 +1,4 @@
-void eight(int y){
+void eight(int y, int x){
 	{
 		{
 			{
