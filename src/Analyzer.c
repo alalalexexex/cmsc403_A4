@@ -23,13 +23,13 @@ int main(){
 	char filename[MY_CHAR_MAX];  
 	int count = 0; 
 	//Prompt the user to input a filename and continue to prompt the user until they enter a correct one
-	while(infile == NULL /*|| count <= 8*/) {  
+	while(infile == NULL || count <= 8) {  
 		//printf("Enter filename: ");  
 		//scanf("%s",filename);
 		//When given a filename, use fopen to create a new file pointer. 
 			//If fopen can not find the file, it returns null
-		sprintf(filename, "./TokenTests/tokenTest%d.txt", count); 
-		infile = fopen("tt.txt", "r+");
+		sprintf(filename, "./TokenTests/tokenTestBad%d.txt", count); 
+		infile = fopen(filename, "r+");
 		if(infile == NULL){ 
 			printf("ERROR: file %s cannot be opened\n", filename);
 	  	}

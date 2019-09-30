@@ -36,8 +36,7 @@ _Bool arg_decl(struct lexics * allLex, struct lexics * current, int *index){
 // header --> VARTYPE IDENTIFIER LEFT_PARENTHESIS [arg-decl] or more RIGHT_PARENTHESIS
 _Bool header(struct lexics * allLex, struct lexics *current, int *index){
     if(!check_advance(allLex, current, index, VARTYPE))  return FALSE; 
-    printf("here\n");
- 
+     
     if(!check_advance(allLex, current, index, IDENTIFIER)) return FALSE; 
  
     if(!check_advance(allLex, current, index, LEFT_PARENTHESIS)) return FALSE; 

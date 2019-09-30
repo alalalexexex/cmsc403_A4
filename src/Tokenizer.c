@@ -8,7 +8,6 @@
 #define isWhite(c) (c == ' ' || c == '\t' || c == '\r' || c =='\n')
 
 void addToLexics(struct lexics * aLex, int * numLex, char * lexeme, int x){
-    printf("here\n"); 
     struct lexics current; 
     strcpy(current.lexeme, lexeme);
     current.token = x;  
@@ -34,7 +33,8 @@ char * getIdentifier(char * currLine, int * position){
     ident[0] = currLine[*position]; 
     int index = 1;
     (*position)++; 
-    while(validIdentifier(ident) == TRUE && !isWhite(currLine[*position])){
+    while(validIdentifier(ident)){
+        printf("here with the char %c\n", currLine[*position]);
         ident[index] = currLine[*position]; 
         index++; 
         (*position)++; 
@@ -52,7 +52,6 @@ char * makeSingleLex(char lex){
 }
 
 _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
-    printf("here\n");
     int start = 0; 
     int charCounter = 0; 
     for(int i =0; i < strlen(currLine); ++i){
@@ -108,7 +107,6 @@ _Bool tokenizer(struct lexics *aLex, int *numLex, FILE *inf){
     char str[MY_CHAR_MAX]; 
     
     while(fgets(str, MY_CHAR_MAX, inf) != NULL){ 
-        printf("here\n");
         if(lineParse(aLex, str, numLex) == FALSE){
             return FALSE; 
         }
