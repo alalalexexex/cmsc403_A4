@@ -81,6 +81,11 @@ _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i]), RIGHT_PARENTHESIS); 
         }else if(currLine[i] == '+' || currLine[i] == '*' || currLine[i] == '%'){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i]), BINOP); 
+        }else if(currLine[i] == '!'){
+            if(currLine[i+1] == '='){
+                addToLexics(aLex, numLex, "!=", BINOP); 
+                i++; 
+            }
         }else if(currLine[i] == '='){
             if(currLine[i + 1] == '='){
                 addToLexics(aLex, numLex, "==", BINOP); 

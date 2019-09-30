@@ -50,7 +50,7 @@ _Bool header(struct lexics * allLex, struct lexics *current, int *index){
 }
 
 _Bool term(struct lexics *allLex, struct lexics * current, int *index){
-    return  check_advance(allLex, current, index, IDENTIFIER) ||  check_advance(allLex, current, index, NUMBER); 
+    return check_advance(allLex, current, index, IDENTIFIER) ||  check_advance(allLex, current, index, NUMBER); 
 }
 
 // expression --> term {BINOP term} | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
@@ -84,10 +84,22 @@ _Bool assignment(struct lexics *allLex, struct lexics * current, int *index){
 
 _Bool return_stmt(struct lexics *allLex, struct lexics * current, int *index){
 
+    if(!expression(allLex, current, index)) return FALSE;
+    if(!check_advance(allLex, current, index, EOL)) return FALSE; 
+
+    return TRUE;  
 }
+
+// while-loop --> WHILE_KEYWORD LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement
 
 _Bool while_loop(struct lexics *allLex, struct lexics * current, int *index){
 
+    if(!check_advance(allLex, current, index, LEFT_PARENTHESIS)) return FALSE; 
+    if(!expression(allLex, current, index)) return FALSE; 
+    if(!check_advance(allLex, current, index, RIGHT_PARENTHESIS)) return FALSE; 
+    if(!statement(allLex, current, index)) return FALSE; 
+
+    return TRUE; 
 }
 
 // body --> LEFT_BRACKET [statement-list] RIGHT_BRACKET
