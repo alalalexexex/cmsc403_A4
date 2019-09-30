@@ -39,7 +39,6 @@ char * getIdentifier(char * currLine, int * position){
         (*position)++; 
     }
     ident[--index] = '\0'; 
-    printf("validIdentifier: %d\n", validIdentifier(ident)); 
     (*position) = (*position) - 2; 
     return ident; 
 }

@@ -25,7 +25,7 @@ int main(){
 	printf("Number of lexemes: %d\n",numberOfLexics);
 	printf("Lexemes: ");
 	for(int i = 0; i < numberOfLexics; i++){
-		printf("lexeme name: [%s] token: %d \n",allLexics[i].lexeme, allLexics[i].token);
+		printf(" %s ",allLexics[i].lexeme);
 	}
 	printf("\n");
 	printf("Did parse: %d\n",parser(allLexics, numberOfLexics));
