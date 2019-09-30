@@ -34,7 +34,7 @@ char * getIdentifier(char * currLine, int * position){
     ident[0] = currLine[*position]; 
     int index = 1;
     (*position)++; 
-    while(validIdentifier(ident) == TRUE){
+    while(validIdentifier(ident) == TRUE && !isWhite(currLine[*position])){
         ident[index] = currLine[*position]; 
         index++; 
         (*position)++; 
@@ -52,6 +52,7 @@ char * makeSingleLex(char lex){
 }
 
 _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
+    printf("here\n");
     int start = 0; 
     int charCounter = 0; 
     for(int i =0; i < strlen(currLine); ++i){
@@ -107,6 +108,7 @@ _Bool tokenizer(struct lexics *aLex, int *numLex, FILE *inf){
     char str[MY_CHAR_MAX]; 
     
     while(fgets(str, MY_CHAR_MAX, inf) != NULL){ 
+        printf("here\n");
         if(lineParse(aLex, str, numLex) == FALSE){
             return FALSE; 
         }
