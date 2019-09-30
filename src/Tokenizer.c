@@ -8,6 +8,7 @@
 #define isWhite(c) (c == ' ' || c == '\t' || c == '\r' || c =='\n')
 
 void addToLexics(struct lexics * aLex, int * numLex, char * lexeme, int x){
+    printf("here\n"); 
     struct lexics current; 
     strcpy(current.lexeme, lexeme);
     current.token = x;  

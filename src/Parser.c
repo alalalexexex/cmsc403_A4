@@ -3,7 +3,7 @@
 #include "Parser.h"
 
 _Bool check_advance(struct lexics * allLex, struct lexics *current, int * index, int expected){
-    printf("current lexeme is %s ::: index is %d\n", current->lexeme, *index); 
+    //printf("current lexeme is %s ::: index is %d\n", current->lexeme, *index); 
     if(current->token != expected){
         return FALSE; 
     }
@@ -13,7 +13,7 @@ _Bool check_advance(struct lexics * allLex, struct lexics *current, int * index,
 }
 
 _Bool check(struct lexics * current, int expected){
-    printf("in the check function\n");  
+    //printf("in the check function\n");  
     return current->token == expected; 
 }
 
@@ -36,6 +36,7 @@ _Bool arg_decl(struct lexics * allLex, struct lexics * current, int *index){
 // header --> VARTYPE IDENTIFIER LEFT_PARENTHESIS [arg-decl] or more RIGHT_PARENTHESIS
 _Bool header(struct lexics * allLex, struct lexics *current, int *index){
     if(!check_advance(allLex, current, index, VARTYPE))  return FALSE; 
+    printf("here\n");
  
     if(!check_advance(allLex, current, index, IDENTIFIER)) return FALSE; 
  
@@ -108,7 +109,7 @@ _Bool body(struct lexics * allLex, struct lexics *current, int *index){
  
 
     // go to statement_list until last bracket is found 
-    statement_list(allLex, current, index);  
+    if(!statement_list(allLex, current, index)) return FALSE;  
 
     // then check if index is the last lexeme and is a right bracket  
     if(!check_advance(allLex, current, index, RIGHT_BRACKET)) return FALSE;
@@ -127,12 +128,17 @@ _Bool statement(struct lexics *allLex, struct lexics * current, int *index){
     } 
 }
 // statement-list --> statement {statement}
-void statement_list(struct lexics * allLex, struct lexics * current, int *index){
-    if(check(current, RIGHT_BRACKET)) return; // not required to have any statements. 
-    printf("I'm here\n"); 
-    while(statement(allLex, current, index)){
+_Bool statement_list(struct lexics * allLex, struct lexics * current, int *index){
+    if(check(current, RIGHT_BRACKET)) return TRUE; // not required to have any statements. 
+    //printf("I'm here\n"); 
+
+    // need to change ::: messing up the bad tests
+    while(1){
+        if(!statement(allLex, current, index)){
+            return FALSE; 
+        }else if(check(current, RIGHT_BRACKET)) return TRUE; 
     }
-    return; 
+    return TRUE; 
 }
 
 _Bool parser(struct lexics *allLex, int numberOfLexics){
