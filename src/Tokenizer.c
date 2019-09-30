@@ -6,6 +6,7 @@
 #define isDigit(c) ('0' <= c && c <= '9')
 #define isLetter(c) ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_')
 #define isWhite(c) (c == ' ' || c == '\t' || c == '\r' || c =='\n')
+#define isStructure(c) (c == '}' || c == '{' || c == ')' || c =='(' || c == '=' || c == '*' || c == '+' || c =='!' || c == ';' || c == ',')
 
 void addToLexics(struct lexics * aLex, int * numLex, char * lexeme, int x){
     struct lexics current; 
@@ -33,14 +34,14 @@ char * getIdentifier(char * currLine, int * position){
     ident[0] = currLine[*position]; 
     int index = 1;
     (*position)++; 
-    while(validIdentifier(ident) == TRUE){
+    while(!isWhite(currLine[*position]) && !isStructure(currLine[*position])){
+         
         ident[index] = currLine[*position]; 
         index++; 
         (*position)++; 
     }
-    ident[--index] = '\0'; 
-    printf("validIdentifier: %d\n", validIdentifier(ident)); 
-    (*position) = (*position) - 2; 
+    ident[index] = '\0'; 
+    (*position)--;  
     return ident; 
 }
 
@@ -82,6 +83,11 @@ _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i]), RIGHT_PARENTHESIS); 
         }else if(currLine[i] == '+' || currLine[i] == '*' || currLine[i] == '%'){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i]), BINOP); 
+        }else if(currLine[i] == '!'){
+            if(currLine[i+1] == '='){
+                addToLexics(aLex, numLex, "!=", BINOP); 
+                i++; 
+            }
         }else if(currLine[i] == '='){
             if(currLine[i + 1] == '='){
                 addToLexics(aLex, numLex, "==", BINOP); 
