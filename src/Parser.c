@@ -1,8 +1,17 @@
 #include <stdlib.h>
+#include <assert.h>
 #include "Parser.h"
 
+int numLex = 0; 
+
+/****
+ * check advance checks the current lexeme for correctness and advances the index. 
+*/ 
 _Bool check_advance(struct lexics * allLex, struct lexics *current, int * index, int expected){
-    //printf("current lexeme is %s ::: index is %d\n", current->lexeme, *index); 
+    
+    // make sure that the index never passes the number of all lexemes 
+    assert(*index < numLex); 
+    
     if(current->token != expected){
         return FALSE; 
     }
@@ -18,9 +27,12 @@ _Bool check(struct lexics * current, int expected){
 
 // arg-decl --> VARTYPE IDENTIFIER {COMMA VARTYPE IDENTIFIER}
 _Bool arg_decl(struct lexics * allLex, struct lexics * current, int *index){
-    if(check(current, RIGHT_PARENTHESIS)) return TRUE;
-    while(1){
 
+    // check if there is no arg-decl still a valid statement
+    if(check(current, RIGHT_PARENTHESIS)) return TRUE;
+
+    // check for the arg-decl
+    while(1){
         if(!check_advance(allLex, current, index, VARTYPE)) return FALSE; 
     
 
@@ -34,6 +46,7 @@ _Bool arg_decl(struct lexics * allLex, struct lexics * current, int *index){
 
 // header --> VARTYPE IDENTIFIER LEFT_PARENTHESIS [arg-decl] or more RIGHT_PARENTHESIS
 _Bool header(struct lexics * allLex, struct lexics *current, int *index){
+
     if(!check_advance(allLex, current, index, VARTYPE))  return FALSE; 
      
     if(!check_advance(allLex, current, index, IDENTIFIER)) return FALSE; 
@@ -44,10 +57,10 @@ _Bool header(struct lexics * allLex, struct lexics *current, int *index){
 
     if(!check_advance(allLex, current, index, RIGHT_PARENTHESIS)) return FALSE; 
 
- 
     return TRUE; 
 }
 
+// term -> NUMBER | IDENTIFIER 
 _Bool term(struct lexics *allLex, struct lexics * current, int *index){
     return check_advance(allLex, current, index, IDENTIFIER) ||  check_advance(allLex, current, index, NUMBER); 
 }
@@ -55,38 +68,25 @@ _Bool term(struct lexics *allLex, struct lexics * current, int *index){
 // expression --> term {BINOP term} | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
 _Bool expression(struct lexics *allLex, struct lexics * current, int *index){
     if(term(allLex, current, index)){
+        // first option -> term {BINOP term} (One or more terms with BINOP between them)
         while(check_advance(allLex, current, index, BINOP)){
             if(!term(allLex, current, index)) return FALSE; 
         }
         return TRUE; 
     }else{
-        if(!check_advance(allLex, current, index, LEFT_PARENTHESIS)) return FALSE; 
-        expression(allLex, current, index); 
-        if(!check_advance(allLex, current, index, RIGHT_PARENTHESIS)) return FALSE; 
-    }
-
-    return TRUE; 
+        // other option -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
+        return check_advance(allLex, current, index, LEFT_PARENTHESIS) && expression(allLex, current, index) && check_advance(allLex, current, index, RIGHT_PARENTHESIS); 
+    } 
 }
 
 // assignment --> IDENTIFIER EQUAL expression EOL
 _Bool assignment(struct lexics *allLex, struct lexics * current, int *index){
-    if(!check_advance(allLex, current, index, EQUAL)) return FALSE; 
- 
-    if(!expression(allLex, current, index)) return FALSE; 
-
-    if(!check_advance(allLex, current, index, EOL)) return FALSE; 
- 
-
-    return TRUE; 
-
+    return check_advance(allLex, current, index, EQUAL) && expression(allLex, current, index) && check_advance(allLex, current, index, EOL); 
 }
 
+// return stmt -> expression EOL
 _Bool return_stmt(struct lexics *allLex, struct lexics * current, int *index){
-
-    if(!expression(allLex, current, index)) return FALSE;
-    if(!check_advance(allLex, current, index, EOL)) return FALSE; 
-
-    return TRUE;  
+    return expression(allLex, current, index) && check_advance(allLex, current, index, EOL);  
 }
 
 // while-loop --> WHILE_KEYWORD LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement
@@ -121,10 +121,9 @@ _Bool statement(struct lexics *allLex, struct lexics * current, int *index){
     else if (check_advance(allLex, current, index, RETURN_KEYWORD)) return return_stmt(allLex, current, index); 
     else if(check_advance(allLex, current, index, IDENTIFIER)) return assignment(allLex, current, index); 
     else if(check(current, LEFT_BRACKET)) return body(allLex, current, index); 
-    else {
-        return FALSE; 
-    } 
+    else return FALSE; 
 }
+
 // statement-list --> statement {statement}
 _Bool statement_list(struct lexics * allLex, struct lexics * current, int *index){
     if(check(current, RIGHT_BRACKET)) return TRUE; // not required to have any statements. 
@@ -141,7 +140,10 @@ _Bool statement_list(struct lexics * allLex, struct lexics * current, int *index
 
 _Bool parser(struct lexics *allLex, int numberOfLexics){
     int index = 0; 
-    struct lexics current = allLex[index]; 
+
+    struct lexics current = allLex[index]; // start at first lexeme
+
+    numLex = numberOfLexics; // assign global variable numLex 
 
     return header(allLex, &current, &index) && body(allLex, &current, &index) && (index == numberOfLexics); 
 }

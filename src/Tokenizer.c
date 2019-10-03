@@ -30,12 +30,11 @@ char * getNumber(char * currLine, int * position){
 }
 
 char * getIdentifier(char * currLine, int * position){
-    char * ident = malloc(MY_CHAR_MAX * sizeof(char)); 
+    char * ident = malloc(MY_CHAR_MAX * sizeof(char)); // make new storage
     ident[0] = currLine[*position]; 
     int index = 1;
     (*position)++; 
     while(!isWhite(currLine[*position]) && !isStructure(currLine[*position])){
-         
         ident[index] = currLine[*position]; 
         index++; 
         (*position)++; 

@@ -28,7 +28,7 @@ int main(){
 		//scanf("%s",filename);
 		//When given a filename, use fopen to create a new file pointer. 
 			//If fopen can not find the file, it returns null
-		sprintf(filename, "./TokenTests/tokenTestBad%d.txt", count); 
+		sprintf(filename, "./TokenTests/tokenTest%d.txt", count); 
 		infile = fopen(filename, "r+");
 		if(infile == NULL){ 
 			printf("ERROR: file %s cannot be opened\n", filename);
