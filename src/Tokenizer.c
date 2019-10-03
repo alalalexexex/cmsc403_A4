@@ -8,14 +8,22 @@
 #define isWhite(c) (c == ' ' || c == '\t' || c == '\r' || c =='\n')
 #define isStructure(c) (c == '}' || c == '{' || c == ')' || c =='(' || c == '=' || c == '*' || c == '+' || c =='!' || c == ';' || c == ',')
 
-void addToLexics(struct lexics * aLex, int * numLex, char * lexeme, int x){
+
+/**
+ * function to make it easier to add to the lexics
+*/
+void addToLexics(struct lexics * aLex, int * numLex, char * lexeme, int token){
     struct lexics current; 
     strcpy(current.lexeme, lexeme);
-    current.token = x;  
+    current.token = token;  
     aLex[*numLex] = current;
     (*numLex)++; 
 }
 
+/**
+ * function to build a number from the current input stream. Will stop when something 
+ * that isn't a number is reached. 
+*/
 char * getNumber(char * currLine, int * position){
     char * num = malloc(MY_CHAR_MAX * sizeof(char)); 
     num[MY_CHAR_MAX - 1] = '\0'; 
@@ -25,10 +33,15 @@ char * getNumber(char * currLine, int * position){
         index++; 
         (*position)++; 
     }
-    (*position)--; 
+    (*position)--; // decrement the position because we've gone one too far in the while loop
     return num;  
 }
 
+/**
+ * function to build an identifier until something that can't be considered and is reserved
+ * in the grammar. I didn't use validIdentifier, because that would assume we are only using 
+ * valid identifiers. 
+*/
 char * getIdentifier(char * currLine, int * position){
     char * ident = malloc(MY_CHAR_MAX * sizeof(char)); // make new storage
     ident[0] = currLine[*position]; 
@@ -40,10 +53,15 @@ char * getIdentifier(char * currLine, int * position){
         (*position)++; 
     }
     ident[index] = '\0'; 
-    (*position)--;  
+    (*position)--; // decrement the position because we've gone one too far in the while loop
     return ident; 
 }
 
+/**
+ * Creates a single char lexeme. This is beneficial because if 
+ * I reach a valid single lexeme like a bracket, I can just create a 
+ * lexeme instead of extracting it from the input stream. 
+*/
 char * makeSingleLex(char lex){
     char * single = malloc(2 * sizeof(char)); 
     single[0] = lex; 
@@ -51,6 +69,11 @@ char * makeSingleLex(char lex){
     return single; 
 }
 
+/**
+ * Main function that goes through each character of the input stream. 
+ * It is setup to only take in valid lexemes, and will return false if an 
+ * invalid lexeme is found. 
+ */
 _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
     int start = 0; 
     int charCounter = 0; 
@@ -83,14 +106,16 @@ _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
         }else if(currLine[i] == '+' || currLine[i] == '*' || currLine[i] == '%'){
             addToLexics(aLex, numLex, makeSingleLex(currLine[i]), BINOP); 
         }else if(currLine[i] == '!'){
+            // check to make sure that the lexeme is '!=' and not just '!'
             if(currLine[i+1] == '='){
                 addToLexics(aLex, numLex, "!=", BINOP); 
-                i++; 
+                i++; // consumed more than one character
             }
         }else if(currLine[i] == '='){
+            // check to see if we see a '==' or just '='
             if(currLine[i + 1] == '='){
                 addToLexics(aLex, numLex, "==", BINOP); 
-                i++; 
+                i++; // consumed more than one character
             }else{
                 addToLexics(aLex, numLex, "=", EQUAL); 
             }
@@ -106,6 +131,7 @@ _Bool lineParse(struct lexics * aLex, char * currLine, int *numLex){
 _Bool tokenizer(struct lexics *aLex, int *numLex, FILE *inf){
     char str[MY_CHAR_MAX]; 
     
+    // fgets gets each line of the input stream
     while(fgets(str, MY_CHAR_MAX, inf) != NULL){ 
         if(lineParse(aLex, str, numLex) == FALSE){
             return FALSE; 
@@ -114,8 +140,3 @@ _Bool tokenizer(struct lexics *aLex, int *numLex, FILE *inf){
      
     return TRUE; 
 }
-
-// How to procede?
-// Get each line, delimit by space 
-// check for parens, then if ( check for anything inside parens 
-// check for ) 
